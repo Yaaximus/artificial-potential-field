@@ -277,12 +277,6 @@ class Robot(object):
                 check = check + 1
                 self._pos_x = self._artificial_point_x[0][k]
                 self._pos_y = self._artificial_point_y[0][k]
-                # if (self._err_dtg[0][k])<0.0:
-                #     check = check + 1
-                #     self._pos_x = self._artificial_point_x[0][k]
-                #     self._pos_y = self._artificial_point_y[0][k]
-                # else:
-                #     self._fitness[0][k] = 0.0
             else:
                 self._fitness[0][k] = 0.0
 

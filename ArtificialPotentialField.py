@@ -33,7 +33,7 @@ def main():
         my_robot.decide_next_move(goal=goal, obstacles=obstacles)
         my_robot.take_next_move()
         plt.draw()
-        plt.pause(0.02)
+        plt.pause(0.1)
 
 if __name__ == "__main__":
 
