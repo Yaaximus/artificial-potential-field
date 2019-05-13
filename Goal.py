@@ -15,8 +15,6 @@ class Goal(object):
             [Position in x-axis of Goal], by default 9.0
         pos_y : float, optional
             [Position in y-axis of Goal], by default 9.0
-        alpha : float, optional
-            [Depth of Attractant], by default 1.0
         sigma : float, optional
             [Width of Attractant], by default 4.0
         """

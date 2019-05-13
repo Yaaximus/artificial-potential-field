@@ -16,22 +16,22 @@ def main():
     obstacle4 = Obstacle(pos_x=14.0, pos_y=18.0, sigma=1.0)
     obstacles = [obstacle1, obstacle2, obstacle3, obstacle4]
     goal = Goal(pos_x=18.0, pos_y=12.0, sigma=2.0)
-    my_robot = Robot(pos_x=5.0, pos_y=5.0, sensor_range=2.0, npts=60)
+    robot = Robot(pos_x=5.0, pos_y=5.0, sensor_range=2.0, npts=60)
 
     plt.figure()
     plt.axis([0, 20, 0, 20])
     
-    while my_robot.get_distance_to_object(goal=goal) > 0.9:
+    while robot.get_distance_to_object(goal=goal) > 0.9:
 
-        plt.plot(my_robot.get_coordinate("x"), my_robot.get_coordinate("y"),"o")
+        plt.plot(robot.get_coordinate("x"), robot.get_coordinate("y"),"o")
         plt.plot(obstacle1.get_coordinate("x"), obstacle1.get_coordinate("y"),"o")
         plt.plot(obstacle2.get_coordinate("x"), obstacle2.get_coordinate("y"),"o")
         plt.plot(obstacle3.get_coordinate("x"), obstacle3.get_coordinate("y"),"o")
         plt.plot(obstacle4.get_coordinate("x"), obstacle4.get_coordinate("y"),"o")
         plt.plot(goal.get_coordinate("x"), goal.get_coordinate("y"),"o")
 
-        my_robot.decide_next_move(goal=goal, obstacles=obstacles)
-        my_robot.take_next_move()
+        robot.decide_next_move(goal=goal, obstacles=obstacles)
+        robot.take_next_move()
         plt.draw()
         plt.pause(0.1)
 

@@ -15,8 +15,6 @@ class Obstacle(object):
             [Position in x-axis of Obstacle], by default 6.0
         pos_y : float, optional
             [Position in y-axis of Obstacle], by default 6.0
-        alpha : float, optional
-            [Depth of Repellant], by default 1.0
         sigma : float, optional
             [Width of Repellant], by default 4.0
         """
