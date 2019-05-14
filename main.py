@@ -1,6 +1,17 @@
+#!/usr/bin/env python
+
+"""
+Main script
+
+Contains: main function
+
+Author: Yasim Ahmad(mostwanted999)
+
+Email: yasim.ahmed63@yahoo.com
+"""
+
 from Robot import Robot
-from Obstacle import Obstacle
-from Goal import Goal
+from Object import Object
 import matplotlib.pyplot as plt
 
 def main():
@@ -10,12 +21,12 @@ def main():
     during this process it keeps on deciding next move and then exectuing it.
     """
 
-    obstacle1 = Obstacle(pos_x=9.0, pos_y=5.0, sigma=1.0)
-    obstacle2 = Obstacle(pos_x=9.0, pos_y=8.0, sigma=1.0)
-    obstacle3 = Obstacle(pos_x=14.0, pos_y=15.0, sigma=1.0)
-    obstacle4 = Obstacle(pos_x=14.0, pos_y=18.0, sigma=1.0)
+    obstacle1 = Object(pos_x=9.0, pos_y=5.0, sigma=1.0)
+    obstacle2 = Object(pos_x=9.0, pos_y=8.0, sigma=1.0)
+    obstacle3 = Object(pos_x=14.0, pos_y=15.0, sigma=1.0)
+    obstacle4 = Object(pos_x=14.0, pos_y=18.0, sigma=1.0)
     obstacles = [obstacle1, obstacle2, obstacle3, obstacle4]
-    goal = Goal(pos_x=18.0, pos_y=12.0, sigma=2.0)
+    goal = Object(pos_x=18.0, pos_y=12.0, sigma=2.0)
     robot = Robot(pos_x=5.0, pos_y=5.0, sensor_range=2.0, npts=60)
 
     plt.figure()
@@ -37,4 +48,4 @@ def main():
 
 if __name__ == "__main__":
 
-    main()    
+    main()
