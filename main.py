@@ -32,6 +32,7 @@ def main():
     plt.figure()
     plt.axis([0, 20, 0, 20])
     
+    iter = 1
     while robot.get_distance_to_object(goal=goal) > 0.9:
 
         plt.plot(robot.get_coordinate("x"), robot.get_coordinate("y"),"o")
@@ -44,6 +45,8 @@ def main():
         robot.decide_next_move(goal=goal, obstacles=obstacles)
         robot.take_next_move()
         plt.draw()
+        plt.savefig("./images_for_gif/"+str(iter)+".png")
+        iter += 1
         plt.pause(0.1)
 
 if __name__ == "__main__":
