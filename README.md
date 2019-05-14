@@ -3,7 +3,6 @@
 ## Running instruction:
 - Run the main.py file from directory. 
 - User can defined objects like Robot, Goal, Obstacles in this file.
-- Check demo.gif for output
 
 ## Requirements
 - python
@@ -30,3 +29,5 @@
 
 ## List of Obstacles:
 - obstacles = [obstacle1, obstacle2, obstacle3, obstacle4]
+
+- Check demo.gif to see the output
