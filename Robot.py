@@ -1,29 +1,28 @@
 import math as ma
 import numpy as np
+from utils.positional import position
+
 
 class Robot(object):
     """
     This class encorporates the capability of defining Robot object.
     """
 
-    def __init__(self, pos_x=3.0, pos_y=3.0, sensor_range=2.0, npts=60):
+    def __init__(self, position, sensor_range=2.0, npts=60):
         """
         This is the constructor of Robot class
-        
+
         Parameters
         ----------
         pos_x : float, optional
-            [Position in x-axis of Robot], by default 3.0
-        pos_y : float, optional
-            [Position in y-axis of Robot], by default 3.0
+            [Position of object], by default is 1.0 in both x and y axis
         sensor_range : float, optional
             [Distance from robot centre where artificial points will be defined], by default 2.0
         npts : int, optional
             [Number of artificial points], by default 60
         """
 
-        self._pos_x = pos_x
-        self._pos_y = pos_y
+        self.position = position
         self._sensor_range = sensor_range
         self._step_size = 0.4*self._sensor_range
         self._npts = npts
@@ -54,29 +53,12 @@ class Robot(object):
         for num in range(1, self._npts):
             self._theta[0][num] = self._theta[0][num-1] + self._step_degree
 
-    def get_coordinate(self, coordinate=None):
-        """
-        This function returns a specified coordinate of Robot.
-        
-        Parameters
-        ----------
-        coordinate : [char], optional
-            "x" or "y" position of robot], by default None
-        
-        Returns
-        -------
-        [float]
-            [position of robot in coordinate frame]
-        """
-
-        return self._pos_x if coordinate == "x" else self._pos_y
-
     def _cost_function_for_obstacles(self, obstacles, pt_x=None, pt_y=None):
         """
         This function is responsible for calculating potential of current 
         point w.r.t all obstacle. If pt_x and pt_y are not passed as a argument
         then x and y coordinate of robot will be used.
-        
+
         Parameters
         ----------
         obstacles : [list]
@@ -85,7 +67,7 @@ class Robot(object):
             [Position in x-axis], by default None
         pt_y : [float], optional
             [Position in y-axis], by default None
-        
+
         Returns
         -------
         [float]
@@ -96,10 +78,12 @@ class Robot(object):
 
         if pt_x is None:
             for obstacle in obstacles:
-                J_Obst = J_Obst + obstacle.get_alpha()*ma.exp(-0.5*ma.pow( (self.get_distance_to_object(goal=obstacle) / obstacle.get_sigma()),2.0))
+                J_Obst = J_Obst + obstacle.get_alpha()*ma.exp(-0.5 *
+                                                              ma.pow((self.position.calculate_distance(other=obstacle) / obstacle.get_sigma()), 2.0))
         else:
             for obstacle in obstacles:
-                J_Obst = J_Obst + obstacle.get_alpha()*ma.exp(-0.5*ma.pow( (self.get_distance_to_object(goal=obstacle, pt_x=pt_x, pt_y=pt_y) / obstacle.get_sigma()),2.0))
+                J_Obst = J_Obst + obstacle.get_alpha()*ma.exp(-0.5 *
+                                                              ma.pow((self.position.calculate_distance(other=obstacle, x=pt_x, y=pt_y) / obstacle.get_sigma()), 2.0))
 
         return J_Obst
 
@@ -108,7 +92,7 @@ class Robot(object):
         This function is responsible for calculating potential of current 
         point w.r.t goal. If pt_x and pt_y are not passed as a argument
         then x and y coordinate of robot will be used.
-        
+
         Parameters
         ----------
         goal : [Goal]]
@@ -117,7 +101,7 @@ class Robot(object):
             [Position in x-axis], by default None
         pt_y : [float], optional
             [Position in y-axis], by default None
-        
+
         Returns
         -------
         [float]
@@ -125,16 +109,16 @@ class Robot(object):
         """
 
         if pt_x is None:
-            return -goal.get_alpha()*ma.exp(-0.5*ma.pow( (self.get_distance_to_object(goal=goal) / goal.get_sigma()),2.0))
+            return -goal.get_alpha()*ma.exp(-0.5*ma.pow((self.position.calculate_distance(other=goal) / goal.get_sigma()), 2.0))
         else:
-            return -goal.get_alpha()*ma.exp(-0.5*ma.pow( (self.get_distance_to_object(goal=goal, pt_x=pt_x, pt_y=pt_y) / goal.get_sigma()),2.0))
+            return -goal.get_alpha()*ma.exp(-0.5*ma.pow((self.position.calculate_distance(other=goal, x=pt_x, y=pt_y) / goal.get_sigma()), 2.0))
 
     def cost_function(self, goal, obstacles, pt_x=None, pt_y=None):
         """
         This function is responsible for calculating total potential of a point 
         w.r.t goal and obstacles.If pt_x and pt_y are not passed as a argument
         then x and y coordinate of robot will be used.
-        
+
         Parameters
         ----------
         goal : [Goal]
@@ -145,7 +129,7 @@ class Robot(object):
             [Position in x-axis], by default None
         pt_y : [float], optional
             [Position in y-axis], by default None
-        
+
         Returns
         -------
         [float]
@@ -158,47 +142,22 @@ class Robot(object):
         else:
             return self._cost_function_for_goal(goal, pt_x=pt_x, pt_y=pt_y) + self._cost_function_for_obstacles(obstacles, pt_x=pt_x, pt_y=pt_x)
 
-    def get_distance_to_object(self, goal, pt_x=None, pt_y=None):
-        """
-        This function is responsible for calculating distance to goal of a
-        specified point. If pt_x and pt_y are not passed as a argument
-        then x and y coordinate of robot will be used.
-        
-        Parameters
-        ----------
-        goal : [Goal]
-            [Object of class Goal]
-        pt_x : [float], optional
-            [Position in x-axis], by default None
-        pt_y : [float], optional
-            [Position in y-axis], by default None
-        
-        Returns
-        -------
-        [float]
-            [distance of a point from goal]
-        """
-
-        if pt_x is None:
-            return ma.sqrt(ma.pow((self.get_coordinate("x")-goal.get_coordinate("x")),2)+ma.pow((self.get_coordinate("y")-goal.get_coordinate("y")),2))
-
-        else:
-            return ma.sqrt(ma.pow((pt_x-goal.get_coordinate("x")),2)+ma.pow((pt_y-goal.get_coordinate("y")),2))
-
     def _update_artificial_points_coordinates(self):
         """
         This function is responsible for updating artificial points of robot.
         """
 
         for num in range(1, self._npts+1):
-            self._artificial_point_x[0][num-1] = self.get_coordinate("x") + (self._step_size*ma.cos(ma.pi*self._theta[0][num-1]/180.0))
-            self._artificial_point_y[0][num-1] = self.get_coordinate("y") + (self._step_size*ma.sin(ma.pi*self._theta[0][num-1]/180.0))
+            self._artificial_point_x[0][num-1] = self.position.x + \
+                (self._step_size*ma.cos(ma.pi*self._theta[0][num-1]/180.0))
+            self._artificial_point_y[0][num-1] = self.position.y + \
+                (self._step_size*ma.sin(ma.pi*self._theta[0][num-1]/180.0))
 
     def _update_artificial_points(self, goal, obstacles):
         """
         This function is responsible for updating potential, distance to goal
         , error calculation, and fitness of artificial points.
-        
+
         Parameters
         ----------
         goal : [Goal]
@@ -208,11 +167,15 @@ class Robot(object):
         """
 
         for num in range(0, self._npts):
-            self._j_obst_artificial_points[0][num] = self._cost_function_for_obstacles(obstacles=obstacles, pt_x=self._artificial_point_x[0][num], pt_y=self._artificial_point_y[0][num])
-            self._j_goal_artificial_points[0][num] = self._cost_function_for_goal(goal=goal, pt_x=self._artificial_point_x[0][num], pt_y=self._artificial_point_y[0][num])
-            self._jt_artificial_points[0][num] = self._j_obst_artificial_points[0][num] + self._j_goal_artificial_points[0][num]
-            self._dtg_artificial_points[0][num] = self.get_distance_to_object(goal=goal, pt_x=self._artificial_point_x[0][num], pt_y=self._artificial_point_y[0][num])
-        
+            self._j_obst_artificial_points[0][num] = self._cost_function_for_obstacles(
+                obstacles=obstacles, pt_x=self._artificial_point_x[0][num], pt_y=self._artificial_point_y[0][num])
+            self._j_goal_artificial_points[0][num] = self._cost_function_for_goal(
+                goal=goal, pt_x=self._artificial_point_x[0][num], pt_y=self._artificial_point_y[0][num])
+            self._jt_artificial_points[0][num] = self._j_obst_artificial_points[0][num] + \
+                self._j_goal_artificial_points[0][num]
+            self._dtg_artificial_points[0][num] = self.position.calculate_distance(
+                other=goal, x=self._artificial_point_x[0][num], y=self._artificial_point_y[0][num])
+
         self._calculate_error(goal=goal, obstacles=obstacles)
         self._calculate_fitness()
 
@@ -220,7 +183,7 @@ class Robot(object):
         """
         This function is responsible for calculating error in potential and
         distance to goal of artificial points w.r.t goal and obstacles.
-        
+
         Parameters
         ----------
         goal : [Goal]
@@ -229,8 +192,9 @@ class Robot(object):
             [List of obstalce objects]
         """
 
-        JT = self._cost_function_for_obstacles(obstacles) + self._cost_function_for_goal(goal)
-        DTG = self.get_distance_to_object(goal=goal)
+        JT = self._cost_function_for_obstacles(
+            obstacles) + self._cost_function_for_goal(goal)
+        DTG = self.position.calculate_distance(other=goal)
 
         for num in range(0, self._npts):
             self._err_jt[0][num] = self._jt_artificial_points[0][num] - JT
@@ -241,7 +205,7 @@ class Robot(object):
         This function is responsible for calculating fitness based on error
         of artificial points w.r.t goal and obstacles.
         """
-        
+
         for num in range(0, self._npts):
             self._fitness[0][num] = - self._err_dtg[0][num]
 
@@ -250,7 +214,7 @@ class Robot(object):
         This function is responsible for deciding next move of robot based on
         potential, and distance to goal of all artificial potential points w.r.t
         goal and obstacles.
-        
+
         Parameters
         ----------
         goal : [type]
@@ -273,10 +237,10 @@ class Robot(object):
         check = 0
         for num in range(0, self._npts):
             k = np.argmax(self._fitness[0])
-            if (self._err_jt[0][k]<0):
+            if (self._err_jt[0][k] < 0):
                 check = check + 1
-                self._pos_x = self._artificial_point_x[0][k]
-                self._pos_y = self._artificial_point_y[0][k]
+                self.position.x = self._artificial_point_x[0][k]
+                self.position.y = self._artificial_point_y[0][k]
             else:
                 self._fitness[0][k] = 0.0
 

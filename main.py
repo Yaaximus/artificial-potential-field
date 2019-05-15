@@ -13,6 +13,7 @@ Email: yasim.ahmed63@yahoo.com
 from Robot import Robot
 from Object import Object
 import matplotlib.pyplot as plt
+from utils.positional import position
 
 
 def main():
@@ -26,31 +27,31 @@ def main():
     x_limit = 20.0
     y_limit = 20.0
 
-    obstacle1 = Object(pos_x=9.0, pos_y=5.0, sigma=1.0)
-    obstacle2 = Object(pos_x=9.0, pos_y=8.0, sigma=1.0)
-    obstacle3 = Object(pos_x=14.0, pos_y=15.0, sigma=1.0)
-    obstacle4 = Object(pos_x=14.0, pos_y=18.0, sigma=1.0)
+    obstacle1 = Object(position(x=9.0, y=5.0), sigma=1.0)
+    obstacle2 = Object(position(x=9.0, y=8.0), sigma=1.0)
+    obstacle3 = Object(position(x=14.0, y=15.0), sigma=1.0)
+    obstacle4 = Object(position(x=14.0, y=18.0), sigma=1.0)
     obstacles = [obstacle1, obstacle2, obstacle3, obstacle4]
-    goal = Object(pos_x=18.0, pos_y=12.0, sigma=2.0)
-    robot = Robot(pos_x=5.0, pos_y=5.0, sensor_range=2.0, npts=60)
+    goal = Object(position(x=18.0, y=12.0), sigma=2.0)
+    robot = Robot(position(x=5.0, y=5.0), sensor_range=2.0, npts=60)
 
     plt.figure()
     plt.axis([0.0, x_limit, 0.0, y_limit])
 
-    while robot.get_distance_to_object(goal=goal) > 0.9:
+    while robot.position.calculate_distance(other=goal) > 0.9:
 
-        plt.plot(robot.get_coordinate("x"), robot.get_coordinate(
-            "y"), "bo", markersize=x_limit/1.5)
-        plt.plot(goal.get_coordinate("x"), goal.get_coordinate(
-            "y"), "go", markersize=x_limit*goal.get_sigma())
-        plt.plot(obstacle1.get_coordinate("x"), obstacle1.get_coordinate(
-            "y"), "ro", markersize=x_limit*obstacle1.get_sigma())
-        plt.plot(obstacle2.get_coordinate("x"), obstacle2.get_coordinate(
-            "y"), "ro", markersize=x_limit*obstacle2.get_sigma())
-        plt.plot(obstacle3.get_coordinate("x"), obstacle3.get_coordinate(
-            "y"), "ro", markersize=x_limit*obstacle3.get_sigma())
-        plt.plot(obstacle4.get_coordinate("x"), obstacle4.get_coordinate(
-            "y"), "ro", markersize=x_limit*obstacle4.get_sigma())
+        plt.plot(robot.position.x, robot.position.y,
+                 "bo", markersize=x_limit/1.5)
+        plt.plot(goal.position.x, goal.position.y, "go",
+                 markersize=x_limit*goal.get_sigma())
+        plt.plot(obstacle1.position.x, obstacle1.position.y,
+                 "ro", markersize=x_limit*obstacle1.get_sigma())
+        plt.plot(obstacle2.position.x, obstacle2.position.y,
+                 "ro", markersize=x_limit*obstacle2.get_sigma())
+        plt.plot(obstacle3.position.x, obstacle3.position.y,
+                 "ro", markersize=x_limit*obstacle3.get_sigma())
+        plt.plot(obstacle4.position.x, obstacle4.position.y,
+                 "ro", markersize=x_limit*obstacle4.get_sigma())
 
         plt.legend(('Robot', 'Goal', 'Obstacle'), loc='lower right',
                    fontsize='small', numpoints=1, markerscale=0.5, labelspacing=1)
