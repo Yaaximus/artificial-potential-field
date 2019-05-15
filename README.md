@@ -1,5 +1,8 @@
 # Python implmentation of Artificial Potential Field
 
+- Check demo_1.gif to see the output with 4 obstacles b/w robot and goal
+- Check demo_2.gif to see the output with 6 obstacles b/w robot and goal
+
 ## Running instruction:
 - Run the main.py file from directory. 
 - User can defined objects like Robot, Goal, Obstacles in this file.
@@ -29,5 +32,3 @@
 
 ## List of Obstacles:
 - obstacles = [obstacle1, obstacle2, obstacle3, obstacle4]
-
-- Check demo.gif to see the output
