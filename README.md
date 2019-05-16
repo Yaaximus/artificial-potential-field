@@ -1,5 +1,7 @@
 # Python implmentation of Artificial Potential Field
 
+![demo_2](https://user-images.githubusercontent.com/37571161/57884778-ea902280-7842-11e9-809b-c175beb539f3.gif)
+
 - Check demo_1.gif to see the output with 4 obstacles b/w robot and goal
 - Check demo_2.gif to see the output with 6 obstacles b/w robot and goal
 
