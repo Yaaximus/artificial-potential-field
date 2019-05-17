@@ -1,5 +1,12 @@
+"""
+Object class
+
+Author: Yasim Ahmad(yaximus)
+
+Email: yasim.ahmed63@yahoo.com
+"""
 import math as ma
-from utils.positional import position
+from utils.positional import Position
 
 
 class Object(object):
@@ -7,10 +14,10 @@ class Object(object):
     This class encorporates the capability of defining Goal/Obstacle object.
     """
 
-    def __init__(self, position, sigma=4.0):
+    def __init__(self, Position, sigma=4.0):
         """
         This is the constructor of Object class.
-        
+
         Parameters
         ----------
         position : [position]
@@ -19,7 +26,7 @@ class Object(object):
             [Width of Attractant/Repellant], by default 4.0
         """
 
-        self.position = position
+        self.position = Position
         self._sigma = sigma
         self._alpha = 1.0 / (self._sigma*ma.sqrt(2.0*ma.pi))
 

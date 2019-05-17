@@ -1,7 +1,14 @@
+"""
+Position Class
+
+Author: Yasim Ahmad(yaximus)
+
+Email: yasim.ahmed63@yahoo.com
+"""
 import math as ma
 
 
-class position:
+class Position:
     """
     This class encapsulates the capability of defining position of object in
     coordinate system and calculating distance b/w two objects
@@ -9,7 +16,7 @@ class position:
 
     def __init__(self, x=1.0, y=1.0):
         """
-        This is the constructor of position class
+        This is the constructor of Position class
         
         Parameters
         ----------
@@ -26,7 +33,7 @@ class position:
         """
         This function is responsible for calculating distance b/w two 
         points. If x and y are not passed as a argument
-        then x and y coordinate of position class object will be used.
+        then x and y coordinate of Position class object will be used.
 
         Parameters
         ----------

@@ -5,7 +5,7 @@ Main script
 
 Contains: main function
 
-Author: Yasim Ahmad(mostwanted999)
+Author: Yasim Ahmad(yaximus)
 
 Email: yasim.ahmed63@yahoo.com
 """
@@ -13,7 +13,7 @@ Email: yasim.ahmed63@yahoo.com
 from Robot import Robot
 from Object import Object
 import matplotlib.pyplot as plt
-from utils.positional import position
+from utils.positional import Position
 
 
 def main():
@@ -27,13 +27,14 @@ def main():
     x_limit = 20.0
     y_limit = 20.0
 
-    obstacle1 = Object(position(x=9.0, y=5.0), sigma=1.0)
-    obstacle2 = Object(position(x=9.0, y=8.0), sigma=1.0)
-    obstacle3 = Object(position(x=14.0, y=15.0), sigma=1.0)
-    obstacle4 = Object(position(x=14.0, y=18.0), sigma=1.0)
+    obstacle1 = Object(Position(x=9.0, y=5.0), sigma=1.0)
+    obstacle2 = Object(Position(x=9.0, y=8.0), sigma=1.0)
+    obstacle3 = Object(Position(x=14.0, y=15.0), sigma=1.0)
+    obstacle4 = Object(Position(x=14.0, y=18.0), sigma=1.0)
     obstacles = [obstacle1, obstacle2, obstacle3, obstacle4]
-    goal = Object(position(x=18.0, y=12.0), sigma=2.0)
-    robot = Robot(position(x=5.0, y=5.0), sensor_range=2.0, npts=60)
+    goal = Object(Position(x=18.0, y=12.0), sigma=2.0)
+    robot = Robot(Position(x=5.0, y=5.0),
+                  sensor_range=2.0, num_of_artif_pts=60)
 
     plt.figure()
     plt.axis([0.0, x_limit, 0.0, y_limit])
@@ -61,7 +62,7 @@ def main():
         plt.draw()
         plt.savefig("./images_for_gif/"+str(iteration_no)+".png")
         iteration_no += 1.0
-        plt.pause(0.1)
+        plt.pause(0.02)
 
 
 if __name__ == "__main__":

@@ -16,9 +16,11 @@
 - Single robot and goal object
 - image saving capability added
 - positional class encorporated to remove duplicate code in all objects
+- Public and private functions defined in classes
 
 ## Fixed issues:
 - bug fixed in take_next_move function of Robot class
+- vague name replaced with meaningful names
 
 ## Example for usage: 
 #### You can define objects, robot, goal and obstacle's in main function like:

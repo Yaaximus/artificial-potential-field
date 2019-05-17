@@ -1,6 +1,13 @@
+"""
+Robot Class
+
+Author: Yasim Ahmad(yaximus)
+
+Email: yasim.ahmed63@yahoo.com
+"""
 import math as ma
 import numpy as np
-from utils.positional import position
+from utils.positional import Position
 
 
 class Robot(object):
@@ -8,52 +15,50 @@ class Robot(object):
     This class encorporates the capability of defining Robot object.
     """
 
-    def __init__(self, position, sensor_range=2.0, npts=60):
+    def __init__(self, Position, sensor_range=2.0, num_of_artif_pts=60):
         """
         This is the constructor of Robot class
 
         Parameters
         ----------
-        pos_x : float, optional
+        Position : [Position]
             [Position of object], by default is 1.0 in both x and y axis
         sensor_range : float, optional
             [Distance from robot centre where artificial points will be defined], by default 2.0
-        npts : int, optional
+        num_of_artif_pts : int, optional
             [Number of artificial points], by default 60
         """
 
-        self.position = position
-        self._sensor_range = sensor_range
-        self._step_size = 0.4*self._sensor_range
-        self._npts = npts
-        self._step_degree = 360.0/self._npts
-        self._artificial_point_x = np.zeros((1, self._npts))
-        self._artificial_point_y = np.zeros((1, self._npts))
-        self._theta = np.zeros((1, self._npts))
-        self._update_theta()
-        self._confirm_message = ["Solution Exists"]
-        self._error_message = ["No Solution Exists"]
-        self._j_obst_artificial_points = np.zeros((1, self._npts))
-        self._j_goal_artificial_points = np.zeros((1, self._npts))
-        self._jt_artificial_points = np.zeros((1, self._npts))
-        self._dtg_artificial_points = np.zeros((1, self._npts))
-        self._err_jt = np.zeros((1, self._npts))
-        self._err_dtg = np.zeros((1, self._npts))
-        self._fitness = np.zeros((1, self._npts))
+        self.position = Position
+        self.__sensor_range = sensor_range
+        self.__step_size = 0.4*self.__sensor_range
+        self.__num_of_artif_pts = num_of_artif_pts
+        self.__step_degree = 360.0/self.__num_of_artif_pts
+        self.__artif_pts_x = np.zeros((1, self.__num_of_artif_pts))
+        self.__artif_pts_y = np.zeros((1, self.__num_of_artif_pts))
+        self.__theta = np.zeros((1, self.__num_of_artif_pts))
+        self.__update_theta()
+        self.__artif_pts_cost_obst = np.zeros((1, self.__num_of_artif_pts))
+        self.__artif_pts_cost_goal = np.zeros((1, self.__num_of_artif_pts))
+        self.__artif_pts_cost = np.zeros((1, self.__num_of_artif_pts))
+        self.__dist_to_goal_artif_pts = np.zeros((1, self.__num_of_artif_pts))
+        self.__err_cost_func = np.zeros((1, self.__num_of_artif_pts))
+        self.__err_dist_to_goal = np.zeros((1, self.__num_of_artif_pts))
+        self.__fitness = np.zeros((1, self.__num_of_artif_pts))
 
-    def _update_theta(self):
+    def __update_theta(self):
         """
         This function is used for computing angle theta's which are responsible for 
-        finding x and y position of artificial points x = xprev + cos(theta),
+        finding x and y position of artif points x = xprev + cos(theta),
         y = yprev + sin(theta).
         """
 
-        self._theta[0][0] = self._step_degree
+        self.__theta[0][0] = self.__step_degree
 
-        for num in range(1, self._npts):
-            self._theta[0][num] = self._theta[0][num-1] + self._step_degree
+        for num in range(1, self.__num_of_artif_pts):
+            self.__theta[0][num] = self.__theta[0][num-1] + self.__step_degree
 
-    def _cost_function_for_obstacles(self, obstacles, pt_x=None, pt_y=None):
+    def __cost_function_for_obstacles(self, obstacles, pt_x=None, pt_y=None):
         """
         This function is responsible for calculating potential of current 
         point w.r.t all obstacle. If pt_x and pt_y are not passed as a argument
@@ -74,20 +79,20 @@ class Robot(object):
             [Potential of current point w.r.t to obstacles]
         """
 
-        J_Obst = 0.0
+        cost_obst = 0.0
 
         if pt_x is None:
             for obstacle in obstacles:
-                J_Obst = J_Obst + obstacle.get_alpha()*ma.exp(-0.5 *
-                                                              ma.pow((self.position.calculate_distance(other=obstacle) / obstacle.get_sigma()), 2.0))
+                cost_obst = cost_obst + obstacle.get_alpha()*ma.exp(-0.5 *
+                                                                    ma.pow((self.position.calculate_distance(other=obstacle) / obstacle.get_sigma()), 2.0))
         else:
             for obstacle in obstacles:
-                J_Obst = J_Obst + obstacle.get_alpha()*ma.exp(-0.5 *
-                                                              ma.pow((self.position.calculate_distance(other=obstacle, x=pt_x, y=pt_y) / obstacle.get_sigma()), 2.0))
+                cost_obst = cost_obst + obstacle.get_alpha()*ma.exp(-0.5 *
+                                                                    ma.pow((self.position.calculate_distance(other=obstacle, x=pt_x, y=pt_y) / obstacle.get_sigma()), 2.0))
 
-        return J_Obst
+        return cost_obst
 
-    def _cost_function_for_goal(self, goal, pt_x=None, pt_y=None):
+    def __cost_function_for_goal(self, goal, pt_x=None, pt_y=None):
         """
         This function is responsible for calculating potential of current 
         point w.r.t goal. If pt_x and pt_y are not passed as a argument
@@ -137,26 +142,26 @@ class Robot(object):
         """
 
         if pt_x is None:
-            return self._cost_function_for_goal(goal) + self._cost_function_for_obstacles(obstacles)
+            return self.__cost_function_for_goal(goal) + self.__cost_function_for_obstacles(obstacles)
 
         else:
-            return self._cost_function_for_goal(goal, pt_x=pt_x, pt_y=pt_y) + self._cost_function_for_obstacles(obstacles, pt_x=pt_x, pt_y=pt_x)
+            return self.__cost_function_for_goal(goal, pt_x=pt_x, pt_y=pt_y) + self.__cost_function_for_obstacles(obstacles, pt_x=pt_x, pt_y=pt_x)
 
-    def _update_artificial_points_coordinates(self):
+    def __update_artif_pts_coords(self):
         """
-        This function is responsible for updating artificial points of robot.
+        This function is responsible for updating artif points of robot.
         """
 
-        for num in range(1, self._npts+1):
-            self._artificial_point_x[0][num-1] = self.position.x + \
-                (self._step_size*ma.cos(ma.pi*self._theta[0][num-1]/180.0))
-            self._artificial_point_y[0][num-1] = self.position.y + \
-                (self._step_size*ma.sin(ma.pi*self._theta[0][num-1]/180.0))
+        for num in range(1, self.__num_of_artif_pts+1):
+            self.__artif_pts_x[0][num-1] = self.position.x + \
+                (self.__step_size*ma.cos(ma.pi*self.__theta[0][num-1]/180.0))
+            self.__artif_pts_y[0][num-1] = self.position.y + \
+                (self.__step_size*ma.sin(ma.pi*self.__theta[0][num-1]/180.0))
 
-    def _update_artificial_points(self, goal, obstacles):
+    def __update_artif_pts(self, goal, obstacles):
         """
         This function is responsible for updating potential, distance to goal
-        , error calculation, and fitness of artificial points.
+        , error calculation, and fitness of artif points.
 
         Parameters
         ----------
@@ -166,23 +171,23 @@ class Robot(object):
             [List of obstalce objects]
         """
 
-        for num in range(0, self._npts):
-            self._j_obst_artificial_points[0][num] = self._cost_function_for_obstacles(
-                obstacles=obstacles, pt_x=self._artificial_point_x[0][num], pt_y=self._artificial_point_y[0][num])
-            self._j_goal_artificial_points[0][num] = self._cost_function_for_goal(
-                goal=goal, pt_x=self._artificial_point_x[0][num], pt_y=self._artificial_point_y[0][num])
-            self._jt_artificial_points[0][num] = self._j_obst_artificial_points[0][num] + \
-                self._j_goal_artificial_points[0][num]
-            self._dtg_artificial_points[0][num] = self.position.calculate_distance(
-                other=goal, x=self._artificial_point_x[0][num], y=self._artificial_point_y[0][num])
+        for num in range(0, self.__num_of_artif_pts):
+            self.__artif_pts_cost_obst[0][num] = self.__cost_function_for_obstacles(
+                obstacles=obstacles, pt_x=self.__artif_pts_x[0][num], pt_y=self.__artif_pts_y[0][num])
+            self.__artif_pts_cost_goal[0][num] = self.__cost_function_for_goal(
+                goal=goal, pt_x=self.__artif_pts_x[0][num], pt_y=self.__artif_pts_y[0][num])
+            self.__artif_pts_cost[0][num] = self.__artif_pts_cost_obst[0][num] + \
+                self.__artif_pts_cost_goal[0][num]
+            self.__dist_to_goal_artif_pts[0][num] = self.position.calculate_distance(
+                other=goal, x=self.__artif_pts_x[0][num], y=self.__artif_pts_y[0][num])
 
-        self._calculate_error(goal=goal, obstacles=obstacles)
-        self._calculate_fitness()
+        self.__calculate_error(goal=goal, obstacles=obstacles)
+        self.__calculate_fitness()
 
-    def _calculate_error(self, goal, obstacles):
+    def __calculate_error(self, goal, obstacles):
         """
         This function is responsible for calculating error in potential and
-        distance to goal of artificial points w.r.t goal and obstacles.
+        distance to goal of artif points w.r.t goal and obstacles.
 
         Parameters
         ----------
@@ -192,27 +197,27 @@ class Robot(object):
             [List of obstalce objects]
         """
 
-        JT = self._cost_function_for_obstacles(
-            obstacles) + self._cost_function_for_goal(goal)
+        JT = self.__cost_function_for_obstacles(
+            obstacles) + self.__cost_function_for_goal(goal)
         DTG = self.position.calculate_distance(other=goal)
 
-        for num in range(0, self._npts):
-            self._err_jt[0][num] = self._jt_artificial_points[0][num] - JT
-            self._err_dtg[0][num] = self._dtg_artificial_points[0][num] - DTG
+        for num in range(0, self.__num_of_artif_pts):
+            self.__err_cost_func[0][num] = self.__artif_pts_cost[0][num] - JT
+            self.__err_dist_to_goal[0][num] = self.__dist_to_goal_artif_pts[0][num] - DTG
 
-    def _calculate_fitness(self):
+    def __calculate_fitness(self):
         """
         This function is responsible for calculating fitness based on error
-        of artificial points w.r.t goal and obstacles.
+        of artif points w.r.t goal and obstacles.
         """
 
-        for num in range(0, self._npts):
-            self._fitness[0][num] = - self._err_dtg[0][num]
+        for num in range(0, self.__num_of_artif_pts):
+            self.__fitness[0][num] = - self.__err_dist_to_goal[0][num]
 
     def decide_next_move(self, goal, obstacles):
         """
         This function is responsible for deciding next move of robot based on
-        potential, and distance to goal of all artificial potential points w.r.t
+        potential, and distance to goal of all artif potential points w.r.t
         goal and obstacles.
 
         Parameters
@@ -223,9 +228,9 @@ class Robot(object):
             [description]
         """
 
-        self._update_artificial_points_coordinates()
+        self.__update_artif_pts_coords()
 
-        self._update_artificial_points(goal=goal, obstacles=obstacles)
+        self.__update_artif_pts(goal=goal, obstacles=obstacles)
 
     def take_next_move(self):
         """
@@ -235,16 +240,16 @@ class Robot(object):
         """
 
         check = 0
-        for num in range(0, self._npts):
-            k = np.argmax(self._fitness[0])
-            if (self._err_jt[0][k] < 0):
+        for num in range(0, self.__num_of_artif_pts):
+            k = np.argmax(self.__fitness[0])
+            if (self.__err_cost_func[0][k] < 0):
                 check = check + 1
-                self.position.x = self._artificial_point_x[0][k]
-                self.position.y = self._artificial_point_y[0][k]
+                self.position.x = self.__artif_pts_x[0][k]
+                self.position.y = self.__artif_pts_y[0][k]
             else:
-                self._fitness[0][k] = 0.0
+                self.__fitness[0][k] = 0.0
 
         if check == 0:
-            print(self._error_message)
+            print("No Solution Exists")
         else:
-            print(self._confirm_message)
+            print("Solution Exists")
