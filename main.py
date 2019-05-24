@@ -5,7 +5,7 @@ Main script
 
 Contains: main function
 
-Author: Yasim Ahmad(yaximus)
+Author: Yasim Ahmad(yaaximus)
 
 Email: yasim.ahmed63@yahoo.com
 """
@@ -60,7 +60,7 @@ def main():
         robot.decide_next_move(goal=goal, obstacles=obstacles)
         robot.take_next_move()
         plt.draw()
-        plt.savefig("./images_for_gif/"+str(iteration_no)+".png")
+        plt.savefig("./docs/images_for_gif/"+str(iteration_no)+".png")
         iteration_no += 1.0
         plt.pause(0.02)
 

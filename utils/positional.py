@@ -1,7 +1,7 @@
 """
 Position Class
 
-Author: Yasim Ahmad(yaximus)
+Author: Yasim Ahmad(yaaximus)
 
 Email: yasim.ahmed63@yahoo.com
 """
