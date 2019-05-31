@@ -1,4 +1,4 @@
-# Python implmentation of Artificial Potential Field
+# Python implementation of Artificial Potential Field
 
 ![demo_2](https://user-images.githubusercontent.com/37571161/57884778-ea902280-7842-11e9-809b-c175beb539f3.gif)
 
@@ -37,3 +37,11 @@
 
 ## List of Obstacles:
 - obstacles = [obstacle1, obstacle2, obstacle3, obstacle4]
+
+## Objective:
+
+- The aim is to move mobile robot from start point to goal point while avoiding obstacle in path
+
+## Flow Chart Artificial Potential Field:
+
+![FlowChart](https://user-images.githubusercontent.com/37571161/58727204-1c85b500-83fd-11e9-87a1-1e3b23c4ecef.PNG)
